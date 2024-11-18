@@ -14,13 +14,13 @@
     "require": {
         "ext-sodium": "*",
         "laravel/framework": "~9.0||~10.0||~11.0",
-        "casbin/laravel-authz": "^3.1",
+        "casbin/laravel-authz": "^3.1 || ^4.0",
         "darkaonline/l5-swagger": "^8.5"
     },
     "require-dev": {
         "phpunit/phpcov": ">=6.0",
         "phpunit/phpunit": ">=8.0",
-        "casbin/laravel-authz": "^3.1",
+        "casbin/laravel-authz": "^3.1 || ^4.0",
         "laravel/framework": "~9.0||~10.0||~11.0"
     },
     "autoload": {
