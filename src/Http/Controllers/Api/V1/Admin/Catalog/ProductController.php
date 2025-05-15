@@ -453,6 +453,8 @@ class ProductController extends CatalogController
             DB::rollBack();
             return response([
                 'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
             ], 400);
         }
     }
