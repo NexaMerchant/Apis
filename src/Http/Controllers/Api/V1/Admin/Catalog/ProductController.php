@@ -389,7 +389,17 @@ class ProductController extends CatalogController
             $tableData['meta_description'] = $req['meta_description'];
 
 
-            $product = $this->getRepositoryInstance()->update($tableData, $id);
+            try {
+                $product = $this->getRepositoryInstance()->update($tableData, $id);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response([
+                    'message' => $e->getMessage(),
+                    'Variants' => $Variants,
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile(),
+                ], 400);
+            }
 
             Event::dispatch('catalog.product.update.after', $product);
 
