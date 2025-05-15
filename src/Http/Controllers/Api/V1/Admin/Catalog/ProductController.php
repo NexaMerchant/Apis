@@ -355,14 +355,11 @@ class ProductController extends CatalogController
                 if($option3) $Variant[$option3] = $this->findAttributeOptionID($option3, $sku['option3']);
 
                 $Variant['custom_sku'] = $sku['custom_sku'] ?? '';
-                if(empty($sku['id'])) {
-                    //$Variant['sku'] = $input['sku'].'-'. $sku['sku'];
-                    $Variant['sku'] = $sku['sku'];
-                    $Variants["variant_".$i] = $Variant;
+                $Variant['sku'] = $input['sku'].'-'. $sku['sku'];
+                if (empty($sku['id'])) {
+                    $Variants["variant_" . $i] = $Variant;
                     $i++;
-                }else{
-                    // use sku to find the variant
-                    $Variant['sku'] = $sku['sku'];
+                } else {
                     $Variants[$sku['id']] = $Variant;
                 }
             }
@@ -389,17 +386,7 @@ class ProductController extends CatalogController
             $tableData['meta_description'] = $req['meta_description'];
 
 
-            try {
-                $product = $this->getRepositoryInstance()->update($tableData, $id);
-            } catch (\Exception $e) {
-                DB::rollBack();
-                return response([
-                    'message' => $e->getMessage(),
-                    'Variants' => $Variants,
-                    'line' => $e->getLine(),
-                    'file' => $e->getFile(),
-                ], 400);
-            }
+            $product = $this->getRepositoryInstance()->update($tableData, $id);
 
             Event::dispatch('catalog.product.update.after', $product);
 
@@ -453,8 +440,6 @@ class ProductController extends CatalogController
             DB::rollBack();
             return response([
                 'message' => $e->getMessage(),
-                'line' => $e->getLine(),
-                'file' => $e->getFile(),
             ], 400);
         }
     }
