@@ -35,7 +35,7 @@ class PageController extends CMSController
     public function store(Request $request)
     {
         $request->validate([
-            'url_key'      => ['required', 'unique:cms_page_translations,url_key', new \Webkul\Core\Rules\Slug],
+            'url_key'      => ['required', 'unique:cms_page_translations,url_key,locale', new \Webkul\Core\Rules\Slug],
             'page_title'   => 'required',
             'channels'     => 'required',
             'html_content' => 'required',
@@ -71,8 +71,8 @@ class PageController extends CMSController
         $locale = core()->getRequestedLocaleCode();
 
         $request->validate([
-            $locale.'.url_key'     => ['required', new Slug, function ($attribute, $value, $fail) use ($id) {
-                if (! $this->getRepositoryInstance()->isUrlKeyUnique($id, $value)) {
+            $locale.'.url_key'     => ['required', new Slug, function ($attribute, $value, $fail) use ($id, $locale) {
+                if (! $this->getRepositoryInstance()->isUrlKeyUnique($id, $value, $locale)) {
                     $fail(trans('Apis::app.admin.cms.error.already-taken'));
                 }
             }],
