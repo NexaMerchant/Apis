@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Event;
 use Nicelizhi\Manage\Http\Requests\MassDestroyRequest;
 use Webkul\CMS\Repositories\CmsRepository as PageRepository; // Change this line
 use Webkul\Core\Rules\Slug;
+use Illuminate\Validation\Rule;
 use NexaMerchant\Apis\Http\Resources\Api\V1\Admin\CMS\PageResource;
 
 class PageController extends CMSController
@@ -34,8 +35,16 @@ class PageController extends CMSController
      */
     public function store(Request $request)
     {
+        $locale = core()->getRequestedLocaleCode();
         $request->validate([
-            'url_key'      => ['required', 'unique:cms_page_translations,url_key,locale', new \Webkul\Core\Rules\Slug],
+            'url_key'      => [
+                'required',
+                // 'unique:cms_page_translations,url_key,locale',
+                Rule::unique('cms_page_translations')->where(function ($query) use($locale, $request) {
+                    return $query->where('url_key', $request->input('url_key'))->where('locale', $locale);
+                }),
+                new \Webkul\Core\Rules\Slug
+            ],
             'page_title'   => 'required',
             'channels'     => 'required',
             'html_content' => 'required',
